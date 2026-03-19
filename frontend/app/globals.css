@@ -1,0 +1,105 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Custom Properties ─────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Dark mode is default */
+    --background: 222 20% 8%;        /* deep charcoal-blue */
+    --foreground: 210 20% 92%;       /* warm off-white */
+    --card: 222 18% 11%;
+    --card-foreground: 210 20% 92%;
+    --popover: 222 18% 11%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 25 95% 55%;           /* orange-amber brand */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 14% 16%;
+    --secondary-foreground: 210 15% 75%;
+    --muted: 222 14% 14%;
+    --muted-foreground: 215 12% 52%;
+    --accent: 25 95% 55%;
+    --accent-foreground: 0 0% 100%;
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 25 95% 55%;
+    --radius: 0.5rem;
+  }
+}
+
+/* ── Base Resets ─────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "ss01", "cv01", "cv02";
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-foreground;
+  }
+  a {
+    @apply text-inherit no-underline;
+  }
+  ::selection {
+    background: hsl(25 95% 55% / 0.3);
+    color: hsl(var(--foreground));
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+  }
+}
+
+/* ── Shimmer Skeleton ─────────────────────────────────────── */
+@layer components {
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-muted;
+    background-image: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--secondary)) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s linear infinite;
+  }
+}
+
+/* ── Prose overrides for react-markdown ──────────────────── */
+@layer components {
+  .prose-aipulse {
+    @apply prose prose-invert max-w-none;
+    @apply prose-headings:text-foreground prose-headings:font-semibold;
+    @apply prose-p:text-secondary-foreground prose-p:leading-7;
+    @apply prose-a:text-primary prose-a:no-underline hover:prose-a:underline;
+    @apply prose-code:text-pulse-300 prose-code:bg-muted prose-code:rounded prose-code:px-1 prose-code:py-0.5;
+    @apply prose-pre:bg-muted prose-pre:border prose-pre:border-border;
+    @apply prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground;
+    @apply prose-strong:text-foreground;
+    @apply prose-li:text-secondary-foreground;
+  }
+}
+
+/* ── Star rating ─────────────────────────────────────────── */
+@layer components {
+  .star-btn {
+    @apply text-muted-foreground transition-colors duration-150;
+  }
+  .star-btn.filled,
+  .star-btn:hover,
+  .star-btn:hover ~ .star-btn {
+    @apply text-pulse-400;
+  }
+}
