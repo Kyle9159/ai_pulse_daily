@@ -18,7 +18,7 @@ from apscheduler.triggers.cron import CronTrigger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import admin, posts, ratings
+from app.api import admin, posts, ratings, cron
 from app.config import get_settings
 from app.services.refresher import run_refresh
 
@@ -43,6 +43,7 @@ async def lifespan(app: FastAPI):
         id="daily_refresh",
         replace_existing=True,
         max_instances=1,
+        misfire_grace_time=3600,  # fire within 1h of scheduled time if process restarted
         kwargs={"since_hours": 24},
     )
     scheduler.start()
@@ -78,6 +79,7 @@ app.add_middleware(
 app.include_router(posts.router)
 app.include_router(ratings.router)
 app.include_router(admin.router)
+app.include_router(cron.router)
 
 
 @app.get("/health", tags=["health"])

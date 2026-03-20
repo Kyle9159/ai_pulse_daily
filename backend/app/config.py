@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     # Scheduler
     scheduler_timezone: str = "America/Boise"
 
+    # External cron trigger secret (used by cron-job.org or similar)
+    # Set this to any long random string in Railway environment variables.
+    cron_secret: str = ""
+
     # Rate limiting – max ratings per IP per hour per post
     rating_rate_limit: int = 1
 
