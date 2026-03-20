@@ -42,13 +42,8 @@ export function Header() {
           >
             <Rss className="h-4 w-4" />
           </a>
-          {/* "Admin" text – hide on xs, show on sm+ */}
-          <Link
-            href="/admin"
-            className="hidden rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors sm:block"
-          >
-            Admin
-          </Link>
+          {/* "Admin" link intentionally removed from public nav.
+              Navigate to /admin directly when needed. */}
         </nav>
       </div>
     </header>
