@@ -1,7 +1,7 @@
 // components/Header.tsx – Site header with logo and nav
 
 import Link from "next/link";
-import { Zap } from "lucide-react";
+import { Bookmark, Rss, Zap } from "lucide-react";
 
 export function Header() {
   return (
@@ -25,6 +25,22 @@ export function Header() {
           >
             Feed
           </Link>
+          <Link
+            href="/bookmarks"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            aria-label="Saved posts"
+          >
+            <Bookmark className="h-4 w-4" />
+          </Link>
+          <a
+            href="/feed.xml"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            aria-label="RSS feed"
+          >
+            <Rss className="h-4 w-4" />
+          </a>
           <Link
             href="/admin"
             className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"

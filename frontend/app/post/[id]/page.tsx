@@ -8,8 +8,11 @@ import { Header } from "@/components/Header";
 import { Badge } from "@/components/ui/badge";
 import { StarRatingWidget } from "@/components/StarRating";
 import { MarkdownSection } from "@/components/MarkdownSection";
+import { ShareButtons } from "@/components/ShareButtons";
 import { fetchPost } from "@/lib/api";
 import { formatDate } from "@/lib/utils";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.aipulsedaily.news";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -94,6 +97,12 @@ export default async function PostDetailPage({ params }: PageProps) {
               ))}
             </div>
           )}
+
+          {/* Share buttons */}
+          <ShareButtons
+            title={post.title}
+            url={`${SITE_URL}/post/${post.id}`}
+          />
         </header>
 
         {/* ── Summary ── */}
@@ -109,7 +118,7 @@ export default async function PostDetailPage({ params }: PageProps) {
 
         {/* ── Business Impact ── */}
         <MarkdownSection
-          title="Business Impact for PMs"
+          title="Business Impact"
           emoji="📊"
           content={post.business_impact}
         />

@@ -78,6 +78,7 @@ async def list_posts(
     date_to: Optional[str] = Query(None),
     min_rating: Optional[float] = Query(None, ge=0, le=5),
     sponsored: Optional[bool] = Query(None),
+    sort_by: Optional[str] = Query(None, description="Sort field: 'rating' sorts by average_rating desc; default is newest"),
 ) -> PostsResponse:
     filters = []
 
@@ -125,12 +126,20 @@ async def list_posts(
     total = (await db.execute(count_stmt)).scalar_one()
 
     # Paginated results
-    stmt = (
-        select(Post)
-        .where(where_clause)
-        .order_by(Post.published_at.desc().nullslast())
-        .limit(limit)
-    )
+    if sort_by == "rating":
+        stmt = (
+            select(Post)
+            .where(where_clause)
+            .order_by(Post.average_rating.desc().nullslast(), Post.published_at.desc().nullslast())
+            .limit(limit)
+        )
+    else:
+        stmt = (
+            select(Post)
+            .where(where_clause)
+            .order_by(Post.published_at.desc().nullslast())
+            .limit(limit)
+        )
     rows = (await db.execute(stmt)).scalars().all()
 
     next_cursor: Optional[str] = None

@@ -2,11 +2,13 @@
 
 "use client";
 
-import { Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Bookmark, Search, Star, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { PostFilters } from "@/lib/types";
+import type { PostCard, PostFilters } from "@/lib/types";
 
 const CATEGORIES = [
   "LLMs",
@@ -41,13 +43,24 @@ const RATING_OPTIONS = [
   { label: "3+ stars", value: 3 },
 ];
 
+const BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
 interface Props {
   filters: PostFilters;
   onFiltersChange: (f: PostFilters) => void;
   totalCount: number;
+  bookmarkCount?: number;
 }
 
-export function Sidebar({ filters, onFiltersChange, totalCount }: Props) {
+export function Sidebar({ filters, onFiltersChange, totalCount, bookmarkCount = 0 }: Props) {
+  const [trending, setTrending] = useState<PostCard[]>([]);
+
+  useEffect(() => {
+    fetch(`${BASE}/api/posts?sort_by=rating&limit=5&min_rating=1`)
+      .then((r) => r.json())
+      .then((data) => setTrending(data.items ?? []))
+      .catch(() => {});
+  }, []);
   const set = (partial: Partial<PostFilters>) =>
     onFiltersChange({ ...filters, ...partial });
 
@@ -206,6 +219,51 @@ export function Sidebar({ filters, onFiltersChange, totalCount }: Props) {
       <p className="text-xs text-muted-foreground">
         {totalCount.toLocaleString()} posts
       </p>
+
+      {/* Bookmarks */}
+      <div className="border-t border-border pt-4">
+        <Link
+          href="/bookmarks"
+          className="inline-flex items-center gap-2 rounded px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground hover:bg-secondary w-full"
+        >
+          <Bookmark className="h-3.5 w-3.5" />
+          Saved
+          {bookmarkCount > 0 && (
+            <span className="ml-auto rounded-full bg-primary/15 px-1.5 py-0.5 text-[10px] font-medium text-primary">
+              {bookmarkCount}
+            </span>
+          )}
+        </Link>
+      </div>
+
+      {/* Top Rated */}
+      {trending.length > 0 && (
+        <div className="border-t border-border pt-4">
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Top Rated
+          </label>
+          <div className="flex flex-col gap-2">
+            {trending.map((p) => (
+              <Link
+                key={p.id}
+                href={`/post/${p.id}`}
+                className="group flex flex-col gap-0.5 rounded px-2 py-1.5 transition-colors hover:bg-secondary"
+              >
+                <span className="line-clamp-2 text-xs text-foreground leading-snug group-hover:text-primary transition-colors">
+                  {p.title}
+                </span>
+                {p.rating_count > 0 && (
+                  <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <Star className="h-2.5 w-2.5 fill-pulse-400 text-pulse-400" />
+                    {p.average_rating.toFixed(1)}
+                    <span className="opacity-60">({p.rating_count})</span>
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

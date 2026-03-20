@@ -3,9 +3,10 @@
 "use client";
 
 import Link from "next/link";
-import { Clock, ExternalLink, Star } from "lucide-react";
+import { Bookmark, Clock, ExternalLink, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn, timeAgo } from "@/lib/utils";
+import { useBookmarks } from "@/lib/useBookmarks";
 import type { PostCard as PostCardType } from "@/lib/types";
 
 interface Props {
@@ -25,6 +26,7 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
 
 export function PostCard({ post, index = 0 }: Props) {
   const delay = `${(index % 6) * 60}ms`;
+  const { isBookmarked, toggle } = useBookmarks();
 
   return (
     <article
@@ -85,6 +87,18 @@ export function PostCard({ post, index = 0 }: Props) {
           >
             AI Summary →
           </Link>
+          <button
+            onClick={() => toggle(post.id)}
+            aria-label={isBookmarked(post.id) ? "Remove bookmark" : "Bookmark"}
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Bookmark
+              className={cn(
+                "h-3.5 w-3.5",
+                isBookmarked(post.id) && "fill-primary text-primary",
+              )}
+            />
+          </button>
           <a
             href={post.url}
             target="_blank"

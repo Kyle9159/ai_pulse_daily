@@ -2,13 +2,14 @@
 
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { Loader2, SlidersHorizontal, X } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { PostCard, PostCardSkeleton } from "@/components/PostCard";
 import { AdBannerTop, AdCardInline } from "@/components/AdBanner";
+import { useBookmarks } from "@/lib/useBookmarks";
 import { fetchPosts } from "@/lib/api";
 import type { PostFilters } from "@/lib/types";
 
@@ -16,7 +17,9 @@ const PAGE_SIZE = 18;
 
 export default function FeedPage() {
   const [filters, setFilters] = useState<PostFilters>({});
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
+  const { count: bookmarkCount } = useBookmarks();
 
   // Infinite query — each page keyed by cursor (published_at)
   const {
@@ -66,20 +69,38 @@ export default function FeedPage() {
         <AdBannerTop />
 
         <div className="mt-8 flex gap-8">
-          {/* ── Sidebar ── */}
+          {/* ── Desktop Sidebar ── */}
           <div className="hidden w-56 shrink-0 lg:block">
             <div className="sticky top-20">
               <Sidebar
                 filters={filters}
                 onFiltersChange={(f) => setFilters(f)}
                 totalCount={totalCount}
+                bookmarkCount={bookmarkCount}
               />
             </div>
           </div>
 
           {/* ── Feed grid ── */}
           <div className="min-w-0 flex-1">
-            {/* Mobile filter strip (future enhancement) */}
+            {/* Mobile filter button */}
+            <div className="mb-4 flex items-center justify-between lg:hidden">
+              <p className="text-sm text-muted-foreground">
+                {totalCount.toLocaleString()} posts
+              </p>
+              <button
+                onClick={() => setMobileFiltersOpen(true)}
+                className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                Filters
+                {Object.values(filters).some((v) => v !== undefined && v !== "") && (
+                  <span className="rounded-full bg-primary/20 px-1.5 text-[10px] font-medium text-primary">
+                    Active
+                  </span>
+                )}
+              </button>
+            </div>
 
             {isError && (
               <div className="rounded-lg border border-red-800/40 bg-red-900/10 px-4 py-3 text-sm text-red-400">
@@ -139,6 +160,39 @@ export default function FeedPage() {
           </div>
         </div>
       </main>
+
+      {/* ── Mobile filter overlay ── */}
+      {mobileFiltersOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileFiltersOpen(false)}
+          />
+          {/* Drawer */}
+          <div className="absolute right-0 top-0 h-full w-80 max-w-full overflow-y-auto bg-background border-l border-border p-6 shadow-2xl">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-foreground">Filters</h2>
+              <button
+                onClick={() => setMobileFiltersOpen(false)}
+                className="rounded-md p-1 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Close filters"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <Sidebar
+              filters={filters}
+              onFiltersChange={(f) => {
+                setFilters(f);
+                setMobileFiltersOpen(false);
+              }}
+              totalCount={totalCount}
+              bookmarkCount={bookmarkCount}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
