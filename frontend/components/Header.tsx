@@ -18,16 +18,17 @@ export function Header() {
         </Link>
 
         {/* Nav */}
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-0.5">
+          {/* "Feed" text – hide on xs, show on sm+ */}
           <Link
             href="/"
-            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="hidden rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors sm:block"
           >
             Feed
           </Link>
           <Link
             href="/bookmarks"
-            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
             aria-label="Saved posts"
           >
             <Bookmark className="h-4 w-4" />
@@ -36,14 +37,15 @@ export function Header() {
             href="/feed.xml"
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="rounded-md p-2 text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
             aria-label="RSS feed"
           >
             <Rss className="h-4 w-4" />
           </a>
+          {/* "Admin" text – hide on xs, show on sm+ */}
           <Link
             href="/admin"
-            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            className="hidden rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors sm:block"
           >
             Admin
           </Link>

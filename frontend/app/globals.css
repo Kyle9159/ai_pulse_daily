@@ -75,6 +75,15 @@
     background-size: 200% 100%;
     animation: shimmer 1.6s linear infinite;
   }
+
+  /* Hide scrollbar while keeping scroll behaviour */
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* ── Prose overrides for react-markdown ──────────────────── */

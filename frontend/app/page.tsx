@@ -83,23 +83,90 @@ export default function FeedPage() {
 
           {/* ── Feed grid ── */}
           <div className="min-w-0 flex-1">
-            {/* Mobile filter button */}
-            <div className="mb-4 flex items-center justify-between lg:hidden">
-              <p className="text-sm text-muted-foreground">
-                {totalCount.toLocaleString()} posts
-              </p>
-              <button
-                onClick={() => setMobileFiltersOpen(true)}
-                className="inline-flex items-center gap-2 rounded-md border border-border bg-secondary px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                Filters
-                {Object.values(filters).some((v) => v !== undefined && v !== "") && (
-                  <span className="rounded-full bg-primary/20 px-1.5 text-[10px] font-medium text-primary">
-                    Active
-                  </span>
-                )}
-              </button>
+            {/* ── Mobile sticky filter bar ── */}
+            <div className="sticky top-14 z-40 -mx-4 mb-4 border-b border-border bg-background/95 px-4 pb-3 pt-3 backdrop-blur-sm sm:-mx-6 sm:px-6 lg:hidden">
+              <div className="flex items-center gap-2">
+                {/* Filters drawer button */}
+                <button
+                  onClick={() => setMobileFiltersOpen(true)}
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-border bg-secondary px-3 py-2 text-sm font-medium text-foreground transition-colors active:bg-muted"
+                >
+                  <SlidersHorizontal className="h-4 w-4" />
+                  Filters
+                  {(() => {
+                    const activeCount = Object.values(filters).filter((v) => v !== undefined && v !== "").length;
+                    return activeCount > 0 ? (
+                      <span className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-bold leading-none text-white">
+                        {activeCount}
+                      </span>
+                    ) : null;
+                  })()}
+                </button>
+
+                {/* Quick category chips */}
+                <div className="scrollbar-none flex min-w-0 flex-1 gap-1.5 overflow-x-auto pb-0.5">
+                  {["LLMs", "Research", "Safety", "Tools", "Vision", "Business", "MLOps", "Audio", "Robotics", "Policy"].map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() =>
+                        setFilters((f) => ({
+                          ...f,
+                          category: f.category === cat ? undefined : cat,
+                        }))
+                      }
+                      className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                        filters.category === cat
+                          ? "border-primary bg-primary/15 text-primary"
+                          : "border-border bg-secondary/60 text-muted-foreground"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Active filter pills (search / source / rating) */}
+              {(filters.q || filters.source || filters.min_rating) && (
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {filters.q && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                      &ldquo;{filters.q}&rdquo;
+                      <button
+                        onClick={() => setFilters((f) => ({ ...f, q: undefined }))}
+                        className="opacity-70 hover:opacity-100"
+                        aria-label="Clear search"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  )}
+                  {filters.source && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                      {filters.source}
+                      <button
+                        onClick={() => setFilters((f) => ({ ...f, source: undefined }))}
+                        className="opacity-70 hover:opacity-100"
+                        aria-label="Clear source"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  )}
+                  {filters.min_rating && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                      {filters.min_rating}+ stars
+                      <button
+                        onClick={() => setFilters((f) => ({ ...f, min_rating: undefined }))}
+                        className="opacity-70 hover:opacity-100"
+                        aria-label="Clear rating"
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
 
             {isError && (
