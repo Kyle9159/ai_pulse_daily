@@ -68,6 +68,22 @@ export default function FeedPage() {
         {/* Top ad slot */}
         <AdBannerTop />
 
+        {/* Last-updated timestamp */}
+        {allPosts[0]?.published_at && (
+          <p className="mt-4 text-right text-xs text-muted-foreground">
+            Feed updated{" "}
+            <time dateTime={allPosts[0].published_at}>
+              {new Intl.DateTimeFormat("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+                timeZoneName: "short",
+              }).format(new Date(allPosts[0].published_at))}
+            </time>
+          </p>
+        )}
+
         <div className="mt-8 flex gap-8">
           {/* ── Desktop Sidebar ── */}
           <div className="hidden w-56 shrink-0 lg:block">
