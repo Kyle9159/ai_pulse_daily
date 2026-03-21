@@ -85,3 +85,9 @@ app.include_router(cron.router)
 @app.get("/health", tags=["health"])
 async def health() -> dict:
     return {"status": "ok"}
+
+
+@app.get("/ads.txt", include_in_schema=False)
+async def ads_txt():
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse("google.com, pub-6671856937433037, DIRECT, f08c47fec0942fa0\n")
