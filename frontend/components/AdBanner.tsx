@@ -14,9 +14,8 @@ declare global {
 
 const PUB_ID = "ca-pub-6671856937433037";
 
-// ⚠️  Replace these with real slot IDs from your AdSense account
-const TOP_BANNER_SLOT = "YOUR_TOP_BANNER_SLOT_ID";
-const INLINE_SLOT = "YOUR_INLINE_SLOT_ID";
+const TOP_BANNER_SLOT = "7757831081";
+const INLINE_SLOT = "5969539445";
 
 function AdUnit({
   slot,
