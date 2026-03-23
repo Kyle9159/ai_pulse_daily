@@ -52,7 +52,7 @@ function AdUnit({
 
 export function AdBannerTop() {
   return (
-    <div className="w-full overflow-hidden rounded-lg bg-muted/20 min-h-[90px]">
+    <div className="w-full overflow-hidden rounded-lg">
       <AdUnit slot={TOP_BANNER_SLOT} />
     </div>
   );
@@ -60,8 +60,8 @@ export function AdBannerTop() {
 
 export function AdCardInline() {
   return (
-    <div className="col-span-full w-full overflow-hidden rounded-lg bg-muted/20 min-h-[120px]">
-      <AdUnit slot={INLINE_SLOT} format="fluid" />
+    <div className="col-span-full w-full overflow-hidden rounded-lg">
+      <AdUnit slot={INLINE_SLOT} format="auto" />
     </div>
   );
 }
